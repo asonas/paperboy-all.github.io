@@ -1,6 +1,9 @@
+$basecolor:#3b3a37;
+$basefont:'Ledger', "ヒラギノ明朝 Pro W6", "Hiragino Mincho Pro", "HGS明朝E", "ＭＳ Ｐ明朝", serif;
+
 body{
   background:url(/images/bg_body.gif);
-  color:#3b3a37;
+  color:$basecolor;
   font-size:123.1%;
   text-align:center;
 }
@@ -29,10 +32,10 @@ body{
   height:60px;
 }
 #brand{
-  color:#3b3a37;
+  color:$basecolor;
   display:block;
   float:left;
-  font-family:'Ledger', "ヒラギノ明朝 Pro W6", "Hiragino Mincho Pro", "HGS明朝E", "ＭＳ Ｐ明朝", serif;
+  font-family:$basefont;
   line-height:60px;
   height:60px;
   text-decoration:none;
@@ -57,7 +60,7 @@ body{
 }
 h1{
   color:#000;
-  font-family:'Ledger', "ヒラギノ明朝 Pro W6", "Hiragino Mincho Pro", "HGS明朝E", "ＭＳ Ｐ明朝", serif;
+  font-family:$basefont;
   font-size:300%;
   line-height:1.3;
   margin-bottom:1em;
@@ -83,9 +86,9 @@ p{
   margin-bottom:1em;
 }
 hr{
-  background-color:#3b3a37;
-  border:1px #3b3a37 solid;
-  color:#3b3a37;
+  background-color:$basecolor;
+  border:1px $basecolor solid;
+  color:$basecolor;
   height:2px;
   margin-bottom:2em;
 }
@@ -127,7 +130,7 @@ code{
   padding:0.5em 1em;
 }
 blockquote{
-  font-family:'Ledger', "ヒラギノ明朝 Pro W6", "Hiragino Mincho Pro", "HGS明朝E", "ＭＳ Ｐ明朝", serif;
+  font-family:$basefont;
   background:rgba(0,0,0,0.05);
   border-top:1px solid rgba(0,0,0,0.05);
   border-bottom:1px solid rgba(255,255,255,0.5);
