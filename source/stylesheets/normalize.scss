@@ -45,13 +45,22 @@ table {
 }
 .clearfix {
   zoom: 1;
+  &:after {
+    clear: both;
+    content: "";
+    display: block;
+  }
 }
-.clearfix:after {
-  clear: both;
-  content: "";
-  display: block;
+a{
+  color:#01628f;
+  text-decoration:none;
+  &:hover{
+    text-decoration:underline;
+  }
+  &:visited{
+    color:#01628f;
+  }
+  &:active{
+    color:#01628f;
+  }
 }
-a{color:#01628f;text-decoration:none;}
-a:hover{color:#01628f;text-decoration:underline;}
-a:visited{color:#01628f;}
-a:active{color:#01628f;}

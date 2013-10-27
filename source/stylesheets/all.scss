@@ -48,9 +48,9 @@ body{
   text-indent:-9999px;
   top:0;
   width:29px;
-}
-#pepapon-tab:hover{
-  height:45px;
+  &:hover{
+    height:45px;
+  }
 }
 #contents{
   padding:2em 0 4em;
@@ -134,14 +134,14 @@ blockquote{
   padding:1.5em 1em 1.5em 3em;
   position:relative;
   margin-bottom:2em;
-}
-blockquote:before{
-  color:#fff;
-  content:"\"";
-  font-family:'Ledger', serif;
-  font-size:600%;
-  left:0.1em;
-  line-height:1em;
-  position:absolute;
-  top:0;
+  &:before{
+    color:#fff;
+    content:"\"";
+    font-family:'Ledger', serif;
+    font-size:600%;
+    left:0.1em;
+    line-height:1em;
+    position:absolute;
+    top:0;
+  }
 }
