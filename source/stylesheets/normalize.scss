@@ -28,34 +28,39 @@ legend {color:#000;}
 
 /*Reset CSS*/
 body {
+  background:#fff;
   color: #232425;
   font-family:メイリオ, Meiryo, 'ヒラギノ角ゴ Pro W3', 'Hiragino Kaku Gothic Pro', 'ＭＳ Ｐゴシック', 'MS PGothic', Osaka, sans-serif;
   font-size:13px;
   *font-size:small;
   *font:x-small;
   line-height: 1.6;
-  background:#fff;
 }
-
-
-
 ul,ol {
   list-style:none;
 }
 table {
-  font-size:inherit;
   font:100%;
+  font-size:inherit;
 }
 .clearfix {
   zoom: 1;
+  &:after {
+    clear: both;
+    content: "";
+    display: block;
+  }
 }
-.clearfix:after {
-  content: "";
-  display: block;
-  clear: both;
+a{
+  color:#01628f;
+  text-decoration:none;
+  &:hover{
+    text-decoration:underline;
+  }
+  &:visited{
+    color:#01628f;
+  }
+  &:active{
+    color:#01628f;
+  }
 }
-
-a{color:#01628f;text-decoration:none;}
-a:hover{color:#01628f;text-decoration:underline;}
-a:visited{color:#01628f;}
-a:active{color:#01628f;}
