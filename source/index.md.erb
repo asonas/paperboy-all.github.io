@@ -8,6 +8,6 @@ paperboy&co.の技術文書などを公開するサイトです。
 
 ## コンテンツ
 
-<% sitemap.resources.select { |r| r.path =~ /^docs/ }.each do |r| %>
+<% sitemap.resources.select { |r| r.path =~ /^docs.*html$/ }.each do |r| %>
   * [<%= r.metadata[:page]['title'] %>](<%= r.path %>)
 <% end %>
