@@ -54,8 +54,6 @@
 
 <hr>
 
-<h1>Nagios</h1>
-
 <p>何のための監視かは今日はもう説明しない。なぜ開発者がNagiosを学ぶのか?</p>
 
 <p>自分が作った物は自分で面倒見たいのが本音だろう。@kyanny さんがいいこと書いてる。</p>
@@ -68,7 +66,7 @@
 
 <p>復数のホスト、サービス、リソース等の状態の監視を効率的に管理するためのもの。</p>
 
-<h3>フレームワーク2大巨頭</h3>
+<h2>フレームワーク2大巨頭</h2>
 
 <ul>
 <li>Naigos
@@ -89,7 +87,7 @@
 
 <p>ペパボは全部Nagiosなので、とりあえずNagiosだけ覚えればOK。</p>
 
-<h3>フレームワークなので</h3>
+<h2>フレームワークなので</h2>
 
 <p>インストールしただけでは基本的になにもやってくれません。やってくれることは大きく分けて4つ。</p>
 
@@ -100,7 +98,7 @@
 <li>ウェブインターフェースのサーブ</li>
 </ul>
 
-<h3>アーキテクチャ</h3>
+<h2>アーキテクチャ</h2>
 
 <p><img alt="nagios" src="/docs/nagios/images/nagios.png" /></p>
 
@@ -113,7 +111,7 @@
 <p>自分のvm(port 80空いてるやつ)でnagiosをインストールしておいてください。</p>
 <pre class="highlight text">sudo yum install nagios
 </pre>
-<h3>設定ファイルの種類</h3>
+<h2>設定ファイルの種類</h2>
 
 <p>まず大きく分けて、2つに分かれます。</p>
 
@@ -122,7 +120,7 @@
 <li>監視項目の設定(誰の何をどう監視するのか)</li>
 </ul>
 
-<h3>Nagios自体の設定</h3>
+<h2>Nagios自体の設定</h2>
 
 <p>一般的に<code>/etc/nagios/</code>直下に置かれます。</p>
 
@@ -141,13 +139,13 @@
 
 <p>これらは最初に設定したらその後触ることは稀です。なので、特に開発者はその詳細を知る必要は無いです(というか俺も初期セットアップ時に毎回忘れて調べてる)。</p>
 
-<h3>監視項目の設定</h3>
+<h2>監視項目の設定</h2>
 
 <p>こっから重要。</p>
 
 <p>幾つか種類のオブジェクトをファイルに記述し、それらの関連付けを行うという形で、対象ホストや監項目、その内容を定義します。</p>
 
-<h3>ファイルレイアウト</h3>
+<h2>ファイルレイアウト</h2>
 
 <p><code>/etc/nagios/objects/&lt;サービス名&gt;/{hoge.cfg,foo,cfg...}</code></p>
 
@@ -171,7 +169,7 @@
 
 <p>最近はRPMインストール時にnagios/objectが掘られないぽい？</p>
 
-<h3>オブジェクトの種類</h3>
+<h2>オブジェクトの種類</h2>
 
 <p>覚えて欲しいのはこの4つ。
 普通は<code>&lt;object-type&gt;s.cfg</code> という名前のファイルにそれぞれを定義します。</p>
@@ -204,7 +202,7 @@
 </ul></li>
 </ul>
 
-<h4>template</h4>
+<h3>template</h3>
 
 <p>各オブジェクトの説明の前に。全オブジェクトに共通する性質として、こいつらはinheritableです。</p>
 
@@ -223,7 +221,7 @@
 <li>子は親のアトリビュートの値を継承し、全て上書き可能</li>
 </ul>
 
-<h4>host</h4>
+<h3>host</h3>
 
 <p>監視対象ホストを定義する。</p>
 
@@ -248,15 +246,14 @@
 
 <p>hostオブジェクトは自前のスクリプトなどでよく自動生成させるので、直接手編集しないってこともよくあります。</p>
 
-<h4>hostgroup</h4>
+<h3>hostgroup</h3>
 
 <p>hostをなんか意味のある単位で束ねるのに使います。
 使わないってことも可能です。でもserviceオブジェクトで対象hostをいちいち全部並べるのはあほらしいので使います。</p>
 
 <p>hostgrouopを束ねたhostgroupというのも作れますが、あんまり使わないです。</p>
 
-<p>hostとgroupの関係は<code>host has many hostgroup</code>です。
-実は逆もできます。が、しかし。</p>
+<p>hostとgroupの関係は<code>host has many hostgroup</code>です。実は逆もできます。が、しかし。</p>
 
 <ul>
 <li>設定ファイルの見通しが悪くなる</li>
@@ -286,7 +283,7 @@
 
 <p>hostgroups.cfgも一部のサービスでは自動生成してます。</p>
 
-<h4>service</h4>
+<h3>service</h3>
 
 <p>監視項目です。</p>
 
@@ -304,8 +301,8 @@ service_descriptionはアラートに表示される(例えばメールのsubjec
 <p>serviceオブジェクトは(他のobjectの<code>*_name</code>と違い)下記の2つのアトリビュートの組み合わせで一意であればOKです。</p>
 
 <ul>
-<li><code>service_description</code></li>
-<li><code>host[group]_name</code></li>
+<li>service_description</li>
+<li>host[group]_name</li>
 </ul>
 
 <p>つまり、対象やcheck<em>comnnadだけを変えてservice</em>descriptionは同じの沢山ってのはアリです。なので、例えば
@@ -314,7 +311,7 @@ service_descriptionはアラートに表示される(例えばメールのsubjec
 
 <p><del>実は、hostやhostgroupオブジェクトの側で、serviceをひもづけることも可能なんですが、</del> うそ。出来なかったです。</p>
 
-<h4>command</h4>
+<h3>command</h3>
 
 <p>監視の手段とその名前を定義します。</p>
 
@@ -335,7 +332,7 @@ service_descriptionはアラートに表示される(例えばメールのsubjec
 
 <p>他にも<a href="http://nagios.sourceforge.net/docs/3_0/macrolist.html">一杯あります</a>。ARG&lt;N&gt;はserviceオブジェクトから渡される引数で、それを更にプラグインへオプション引数として渡すときに使います。あとの2つもプラグインへの引数としてどちらかをほぼ必ず使います。HOSTADDRESSよりはHOSTNAMEを使った方がベターです。HOSTNAMEを使うことで、名前引きのチェックにもなります。</p>
 
-<h4>nrpe</h4>
+<h3>nrpe</h3>
 
 <p>command(のcommand<em>line)で`check</em>nrpe`というnagiosプラグインを使った監視は、他とはちょと違ってserver - agent型で動きます。対象ホスト上で実行しないと、結果が得られない(得にくい)監視をするのに使います。</p>
 
@@ -356,7 +353,7 @@ service_descriptionはアラートに表示される(例えばメールのsubjec
 
 <p>このように、nrpeを使った監視でも引数を上手く使うことで、設定をコンパクトに保つことができます。</p>
 
-<h4>nagiosプラグイン</h4>
+<h3>nagiosプラグイン</h3>
 
 <p>RPMで入る標準pluginはここにあります。</p>
 <pre class="highlight text">/usr/lib[64]/nagios/plugins/
@@ -382,9 +379,9 @@ service_descriptionはアラートに表示される(例えばメールのsubjec
 
 <p>使い方はポチポチ押してたら、なんとなく分かります。</p>
 
-<h3>よくやるオペレーション</h3>
+<h2>よくやるオペレーション</h2>
 
-<h4>Schedule downtime</h4>
+<h3>Schedule downtime</h3>
 
 <p>Zzzマークでお馴染み。</p>
 
@@ -398,7 +395,7 @@ Schedule downtimeは時間がたてば勝手に解除されますが、こちら
 
 <p>その為「メンテ前にポチってやってメンテ終わったけど解除忘れてた。」なおっちょこちょいをすると、後日本当に障害が起きてもそのホストは気づかれることなく放置されてしまいます(昔実際にあった)。</p>
 
-<h4>Schedule a check of all services on this host</h4>
+<h3>Schedule a check of all services on this host</h3>
 
 <p>若しくは、<code>Re-schedule the next check of this service</code>。</p>
 
@@ -408,7 +405,7 @@ Schedule downtimeは時間がたてば勝手に解除されますが、こちら
 
 <p>そんな時にこれをポチっと押すと、優先的にチェックをして、statusを更新してくれます。</p>
 
-<h4>ホスト検索</h4>
+<h3>ホスト検索</h3>
 
 <p>wan、lanどっちも検索する時は<code>hogehost.*</code>するとどっちも出て便利。</p>
 
