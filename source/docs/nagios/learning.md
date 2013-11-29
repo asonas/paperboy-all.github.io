@@ -20,8 +20,6 @@ title: Nagiosの基礎
 
 ----
 
-# Nagios
-
 何のための監視かは今日はもう説明しない。なぜ開発者がNagiosを学ぶのか?
 
 自分が作った物は自分で面倒見たいのが本音だろう。@kyanny さんがいいこと書いてる。
@@ -34,7 +32,7 @@ nagiosってなんすか?
 
 復数のホスト、サービス、リソース等の状態の監視を効率的に管理するためのもの。
 
-### フレームワーク2大巨頭
+## フレームワーク2大巨頭
 
 * Naigos
   * 設定をテキストファイルで管理
@@ -47,7 +45,7 @@ nagiosってなんすか?
 
 ペパボは全部Nagiosなので、とりあえずNagiosだけ覚えればOK。
 
-### フレームワークなので
+## フレームワークなので
 
 インストールしただけでは基本的になにもやってくれません。やってくれることは大きく分けて4つ。
 
@@ -56,7 +54,7 @@ nagiosってなんすか?
 * 結果の蓄積
 * ウェブインターフェースのサーブ
 
-### アーキテクチャ
+## アーキテクチャ
 
 ![nagios](images/nagios.png)
 
@@ -72,14 +70,14 @@ nagiosってなんすか?
 sudo yum install nagios
 ```
 
-### 設定ファイルの種類
+## 設定ファイルの種類
 
 まず大きく分けて、2つに分かれます。
 
 * Nagios自体の設定(フレームワークとしての設定)
 * 監視項目の設定(誰の何をどう監視するのか)
 
-### Nagios自体の設定
+## Nagios自体の設定
 
 一般的に`/etc/nagios/`直下に置かれます。
 
@@ -90,13 +88,13 @@ sudo yum install nagios
 
 これらは最初に設定したらその後触ることは稀です。なので、特に開発者はその詳細を知る必要は無いです(というか俺も初期セットアップ時に毎回忘れて調べてる)。
 
-### 監視項目の設定
+## 監視項目の設定
 
 こっから重要。
 
 幾つか種類のオブジェクトをファイルに記述し、それらの関連付けを行うという形で、対象ホストや監項目、その内容を定義します。
 
-### ファイルレイアウト
+## ファイルレイアウト
 
 `/etc/nagios/objects/<サービス名>/{hoge.cfg,foo,cfg...}`
 
@@ -109,7 +107,7 @@ sudo yum install nagios
 
 最近はRPMインストール時にnagios/objectが掘られないぽい？
 
-### オブジェクトの種類
+## オブジェクトの種類
 
 覚えて欲しいのはこの4つ。
 普通は`<object-type>s.cfg` という名前のファイルにそれぞれを定義します。
@@ -129,7 +127,7 @@ sudo yum install nagios
   * まじやばい時に追加で誰に通知するか
   * これは後で詳しく説明する(かも)
 
-#### template
+### template
 
 各オブジェクトの説明の前に。全オブジェクトに共通する性質として、こいつらはinheritableです。
 
@@ -140,7 +138,7 @@ sudo yum install nagios
   * staging用サーバとかでちょい変えることはある
 * 子は親のアトリビュートの値を継承し、全て上書き可能
 
-#### host
+### host
 
 監視対象ホストを定義する。
 
@@ -158,15 +156,14 @@ sudo yum install nagios
 
 hostオブジェクトは自前のスクリプトなどでよく自動生成させるので、直接手編集しないってこともよくあります。
 
-#### hostgroup
+### hostgroup
 
 hostをなんか意味のある単位で束ねるのに使います。
 使わないってことも可能です。でもserviceオブジェクトで対象hostをいちいち全部並べるのはあほらしいので使います。
 
 hostgrouopを束ねたhostgroupというのも作れますが、あんまり使わないです。
 
-hostとgroupの関係は`host has many hostgroup`です。
-実は逆もできます。が、しかし。
+hostとgroupの関係は`host has many hostgroup`です。実は逆もできます。が、しかし。
 
 * 設定ファイルの見通しが悪くなる
 * 自動生成(後述)と相性が悪い
@@ -190,7 +187,7 @@ hostとgroupの関係は`host has many hostgroup`です。
 
 hostgroups.cfgも一部のサービスでは自動生成してます。
 
-#### service
+### service
 
 監視項目です。
 
@@ -205,8 +202,8 @@ refs [Service Definition](http://nagios.sourceforge.net/docs/nagioscore/3/en/obj
 
 serviceオブジェクトは(他のobjectの`*_name`と違い)下記の2つのアトリビュートの組み合わせで一意であればOKです。
 
- * `service_description`
- * `host[group]_name`
+ * service_description
+ * host\[group\]_name
 
 つまり、対象やcheck_comnnadだけを変えてservice_descriptionは同じの沢山ってのはアリです。なので、例えば
 「同じミドルウェアを監視するけど、こっちのroleでは厳密に監視するように(check_commandで定義)して、あっちの方は緩くしておく。」
@@ -214,7 +211,7 @@ serviceオブジェクトは(他のobjectの`*_name`と違い)下記の2つの�
 
 <del>実は、hostやhostgroupオブジェクトの側で、serviceをひもづけることも可能なんですが、</del> うそ。出来なかったです。
 
-#### command
+### command
 
 監視の手段とその名前を定義します。
 
@@ -233,7 +230,7 @@ serviceオブジェクトでcommandを指定する際には、引数(\!区切り
 
 他にも[一杯あります](http://nagios.sourceforge.net/docs/3_0/macrolist.html)。ARG\<N\>はserviceオブジェクトから渡される引数で、それを更にプラグインへオプション引数として渡すときに使います。あとの2つもプラグインへの引数としてどちらかをほぼ必ず使います。HOSTADDRESSよりはHOSTNAMEを使った方がベターです。HOSTNAMEを使うことで、名前引きのチェックにもなります。
 
-#### nrpe
+### nrpe
 
 command(のcommand_line)で`check_nrpe`というnagiosプラグインを使った監視は、他とはちょと違ってserver - agent型で動きます。対象ホスト上で実行しないと、結果が得られない(得にくい)監視をするのに使います。
 
@@ -261,7 +258,7 @@ commandオブジェクトの方で、serrviceオブジェクトから受け取�
 このように、nrpeを使った監視でも引数を上手く使うことで、設定をコンパクトに保つことができます。
 
 
-#### nagiosプラグイン
+### nagiosプラグイン
 
 RPMで入る標準pluginはここにあります。
 
@@ -290,9 +287,9 @@ Apacheをフロントエンドにしてるので、RPMを入れると勝手にco
 
 使い方はポチポチ押してたら、なんとなく分かります。
 
-### よくやるオペレーション
+## よくやるオペレーション
 
-#### Schedule downtime
+### Schedule downtime
 
 Zzzマークでお馴染み。
 
@@ -307,7 +304,7 @@ Schedule downtimeは時間がたてば勝手に解除されますが、こちら
 その為「メンテ前にポチってやってメンテ終わったけど解除忘れてた。」なおっちょこちょいをすると、後日本当に障害が起きてもそのホストは気づかれることなく放置されてしまいます(昔実際にあった)。
 
 
-#### Schedule a check of all services on this host
+### Schedule a check of all services on this host
 
 若しくは、`Re-schedule the next check of this service`。
 
@@ -317,7 +314,7 @@ Schedule downtimeは時間がたてば勝手に解除されますが、こちら
 
 そんな時にこれをポチっと押すと、優先的にチェックをして、statusを更新してくれます。
 
-#### ホスト検索
+### ホスト検索
 
 wan、lanどっちも検索する時は`hogehost.*`するとどっちも出て便利。
 
