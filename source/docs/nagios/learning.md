@@ -1,8 +1,8 @@
 ---
-title: NagiosとMuninの基礎
+title: Nagiosの基礎
 ---
 
-# NagiosとMuninの基礎
+# Nagiosの基礎
 
 この文書は新卒採用エンジニアの研修資料として、アドバンスドシニアエンジニアの黒田 良が社内向けに作成したものです。
 
