@@ -1,0 +1,450 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+
+    <!-- Always force latest IE rendering engine or request Chrome Frame -->
+    <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible">
+
+    <!-- Use title if it's in the page YAML frontmatter -->
+    <title>Nagiosの基礎</title>
+
+    <link href="/stylesheets/normalize.css" media="screen" rel="stylesheet" type="text/css" />
+<link href="/stylesheets/all.css" media="screen" rel="stylesheet" type="text/css" />
+<link href="/stylesheets/syntax.css" media="screen" rel="stylesheet" type="text/css" />
+    <script src="/javascripts/all.js" type="text/javascript"></script>
+    <link href='http://fonts.googleapis.com/css?family=Ledger' rel='stylesheet' type='text/css'>
+  </head>
+
+  <body class="docs docs_nagios docs_nagios_learning">
+    <header id="header">
+      <div class="inner">
+        <a id="brand" href="/">
+          paperboy-all.github.io
+        </a>
+        <a id="pepapon-tab" href="http://www.paperboy.co.jp/" target="_blank">
+          paperboy&amp;co.
+        </a>
+      </div>
+    </header>
+    <div id="contents">
+      <div class="inner">
+        <h1>Nagiosの基礎</h1>
+
+<p>この文書は新卒採用エンジニアの研修資料として、アドバンスドシニアエンジニアの黒田 良が社内向けに作成したものです。</p>
+
+<h2>アジェンダ</h2>
+
+<ul>
+<li><p>Nagios</p>
+
+<ul>
+<li>Nagiosってなんすか</li>
+<li>設定の基本</li>
+<li>よくある監視項目</li>
+<li>ウェブインターフェースの見方、使い方</li>
+</ul></li>
+<li><p>Munin</p>
+
+<ul>
+<li>Muninってなんすか</li>
+<li>何処をどう見たらいいのか</li>
+</ul></li>
+</ul>
+
+<hr>
+
+<h1>Nagios</h1>
+
+<p>何のための監視かは今日はもう説明しない。なぜ開発者がNagiosを学ぶのか?</p>
+
+<p>自分が作った物は自分で面倒見たいのが本音だろう。@kyanny さんがいいこと書いてる。</p>
+
+<p><a href="http://blog.kyanny.me/entry/2012/07/20/033411">お願いします脳の恐怖</a></p>
+
+<h2>サービスモニタリングフレームワーク</h2>
+
+<p>nagiosってなんすか?</p>
+
+<p>復数のホスト、サービス、リソース等の状態の監視を効率的に管理するためのもの。</p>
+
+<h3>フレームワーク2大巨頭</h3>
+
+<ul>
+<li>Naigos
+
+<ul>
+<li>設定をテキストファイルで管理</li>
+<li>データストアもファイル</li>
+<li>監視だけ</li>
+</ul></li>
+<li>Zabbix
+
+<ul>
+<li>設定をRDBMSで管理</li>
+<li>データストアもRDBMS</li>
+<li>グラフも作ってくれる</li>
+</ul></li>
+</ul>
+
+<p>ペパボは全部Nagiosなので、とりあえずNagiosだけ覚えればOK。</p>
+
+<h3>フレームワークなので</h3>
+
+<p>インストールしただけでは基本的になにもやってくれません。やってくれることは大きく分けて4つ。</p>
+
+<ul>
+<li>サービスチェックの実行と、そのスケジューリング</li>
+<li>チェック結果の通知</li>
+<li>結果の蓄積</li>
+<li>ウェブインターフェースのサーブ</li>
+</ul>
+
+<h3>アーキテクチャ</h3>
+
+<p><img alt="nagios" src="/docs/nagios/images/nagios.png" /></p>
+
+<hr>
+
+<h2>設定の基本</h2>
+
+<p>設定の自由度が高いので、やり方はいくらでもあります。その割に、ネット上で探しても(それなりの規模での)設定例というのはなかなか見つかりません。今日は現時点で俺がいいと思って実際にやっている設定管理のポイントを交えながら説明していきます。</p>
+
+<p>自分のvm(port 80空いてるやつ)でnagiosをインストールしておいてください。</p>
+<pre class="highlight text">sudo yum install nagios
+</pre>
+<h3>設定ファイルの種類</h3>
+
+<p>まず大きく分けて、2つに分かれます。</p>
+
+<ul>
+<li>Nagios自体の設定(フレームワークとしての設定)</li>
+<li>監視項目の設定(誰の何をどう監視するのか)</li>
+</ul>
+
+<h3>Nagios自体の設定</h3>
+
+<p>一般的に<code>/etc/nagios/</code>直下に置かれます。</p>
+
+<ul>
+<li>nagios.cfg
+
+<ul>
+<li>インクルードする設定ファイルの場所とか、その他リソースの置き場とか</li>
+</ul></li>
+<li>cgi.cfg
+
+<ul>
+<li>ウェブインターフェースの権限設定とか</li>
+</ul></li>
+</ul>
+
+<p>これらは最初に設定したらその後触ることは稀です。なので、特に開発者はその詳細を知る必要は無いです(というか俺も初期セットアップ時に毎回忘れて調べてる)。</p>
+
+<h3>監視項目の設定</h3>
+
+<p>こっから重要。</p>
+
+<p>幾つか種類のオブジェクトをファイルに記述し、それらの関連付けを行うという形で、対象ホストや監項目、その内容を定義します。</p>
+
+<h3>ファイルレイアウト</h3>
+
+<p><code>/etc/nagios/objects/&lt;サービス名&gt;/{hoge.cfg,foo,cfg...}</code></p>
+
+<ul>
+<li>便宜上オブジェクトタイプごとにファイルを分けているが、全て同じスコープ
+
+<ul>
+<li>極端な話、全部単一のファイルに書いても動く</li>
+</ul></li>
+<li>ファイル名は自由。関係ないことを設定してもOK
+
+<ul>
+<li>でも椅子は飛ぶ</li>
+</ul></li>
+<li>サービスごとに階層を掘るのが吉
+
+<ul>
+<li>復数商材を同じnagiosで面倒みるってことも有るので、混ぜるな危険</li>
+</ul></li>
+</ul>
+
+<p>最近はRPMインストール時にnagios/objectが掘られないぽい？</p>
+
+<h3>オブジェクトの種類</h3>
+
+<p>覚えて欲しいのはこの4つ。
+普通は<code>&lt;object-type&gt;s.cfg</code> という名前のファイルにそれぞれを定義します。</p>
+
+<ul>
+<li>hostgroup</li>
+<li>host</li>
+<li>service</li>
+<li>command</li>
+</ul>
+
+<p>その他にも色々なオブジェクトもありますが、(差し当たって開発者は)あんまり気にしなくていいです。こういうこともコントロール可能なんだ、ってことだけ覚えておいてください。</p>
+
+<ul>
+<li>contact、contactgroup
+
+<ul>
+<li>通知する相手の情報とグルーピング</li>
+</ul></li>
+<li>timeperiod
+
+<ul>
+<li>監視、通知する時間帯</li>
+</ul></li>
+<li>serviceescalation, hostescalation
+
+<ul>
+<li>まじやばい時に追加で誰に通知するか</li>
+<li>これは後で詳しく説明する(かも)</li>
+</ul></li>
+</ul>
+
+<h4>template</h4>
+
+<p>各オブジェクトの説明の前に。全オブジェクトに共通する性質として、こいつらはinheritableです。</p>
+
+<ul>
+<li>テンプレートオブジェクト
+
+<ul>
+<li><code>register</code>アトリビュートを0にすると、それ自体は単にひな形となる</li>
+</ul></li>
+<li>子の<code>use</code>アトリビュートでテンプレートオブジェクトを指定して継承
+
+<ul>
+<li>継承を連鎖させる(孫を作る)こともできるけどおすすめしない。むしろすんな</li>
+<li>staging用サーバとかでちょい変えることはある</li>
+</ul></li>
+<li>子は親のアトリビュートの値を継承し、全て上書き可能</li>
+</ul>
+
+<h4>host</h4>
+
+<p>監視対象ホストを定義する。</p>
+
+<p>これと監視項目(service)を結びつけていくわけだけど、ホスト自体の監視という意味もあります(サーバ自体が死んでるとか、NICが死んでるとか)。</p>
+
+<ul>
+<li>通常はpingで監視</li>
+<li>変更は可能</li>
+</ul>
+
+<p>復数のネットワークに属する場合は、別々のhostとして定義するのが吉(not 物理的な単位でのサーバ)。</p>
+
+<ul>
+<li>(特に)ペパボのサービスはNIC2つを付けて .jp と .lanの2つで運用している</li>
+<li>それぞれでサーブしているサービスは違う(roleの視点でみても厳密には別ものである)</li>
+<li>実際にそれを使っているクライアントと同じN/Wから監視すべき
+
+<ul>
+<li>外側にさらしているサービスを内側から監視して大丈夫？</li>
+</ul></li>
+</ul>
+
+<p>hostオブジェクトは自前のスクリプトなどでよく自動生成させるので、直接手編集しないってこともよくあります。</p>
+
+<h4>hostgroup</h4>
+
+<p>hostをなんか意味のある単位で束ねるのに使います。
+使わないってことも可能です。でもserviceオブジェクトで対象hostをいちいち全部並べるのはあほらしいので使います。</p>
+
+<p>hostgrouopを束ねたhostgroupというのも作れますが、あんまり使わないです。</p>
+
+<p>hostとgroupの関係は<code>host has many hostgroup</code>です。
+実は逆もできます。が、しかし。</p>
+
+<ul>
+<li>設定ファイルの見通しが悪くなる</li>
+<li>自動生成(後述)と相性が悪い</li>
+<li>(社内にある酷い設定例を見せる)</li>
+</ul>
+
+<p>なので、hostgoup has many hostは非推奨です。</p>
+
+<p>また、上手くアーキテクチャ設計ができているとき、</p>
+
+<ul>
+<li>ホストはシステムの中で単一の役割を与えられている</li>
+<li>なにをする(何が動いている)ホストなのかはroleが決まっていれば自ずと決まる</li>
+</ul>
+
+<p>なので、hostは単一のhostgroupに属することが多いです。むやみにhostgroupを増やして、hostと紐付けるのは運用効率を著しく下げる為、NGです。</p>
+
+<p>ただし、役割で分類出来ない場合はマルチhostgroupを許容してします。
+例えばH/W構成。</p>
+
+<ul>
+<li>ssd</li>
+<li>raid-controller</li>
+<li>machine-type</li>
+</ul>
+
+<p>hostgroups.cfgも一部のサービスでは自動生成してます。</p>
+
+<h4>service</h4>
+
+<p>監視項目です。</p>
+
+<p>サービス名やプロセス名、サーバリソース名とかを名称(<code>service_description</code>アトリビュート)として付けます。
+service_descriptionはアラートに表示される(例えばメールのsubject)ので、他のオブジェクトのnameとくらべて、より人間がぱっと見で分かりやすいものにした方がいいです。</p>
+
+<p>refs <a href="http://nagios.sourceforge.net/docs/nagioscore/3/en/objectdefinitions.html#service">Service Definition</a></p>
+
+<blockquote>
+<p>may contain spaces, dashes, and colons (semicolons, apostrophes, and quotation marks should be avoided)</p>
+</blockquote>
+
+<p>監視対象はhostもしくはhostgroup(それぞれ復数可)、またはその二つの組み合わせで指定可能ですが、大抵はhostgroupだけでなんとかなります。hostをだらだら並べるような設定はクソなことがおおいです。</p>
+
+<p>serviceオブジェクトは(他のobjectの<code>*_name</code>と違い)下記の2つのアトリビュートの組み合わせで一意であればOKです。</p>
+
+<ul>
+<li><code>service_description</code></li>
+<li><code>host[group]_name</code></li>
+</ul>
+
+<p>つまり、対象やcheck<em>comnnadだけを変えてservice</em>descriptionは同じの沢山ってのはアリです。なので、例えば
+「同じミドルウェアを監視するけど、こっちのroleでは厳密に監視するように(check_commandで定義)して、あっちの方は緩くしておく。」
+みたいなことが可能です。</p>
+
+<p><del>実は、hostやhostgroupオブジェクトの側で、serviceをひもづけることも可能なんですが、</del> うそ。出来なかったです。</p>
+
+<h4>command</h4>
+
+<p>監視の手段とその名前を定義します。</p>
+
+<p>commnad名(<code>command_name</code>)はserviceオブジェクトの<code>check_command</code>アトリビュートで指定され、serviceをどのcommandでチェックするのか、という関係を作ります。</p>
+
+<p><code>command_line</code>に実際に実行するコマンドを書きます。
+コマンドのexit codeでステータス(OK|WARN|CRIT|UNKNOWN)を判別するので、コマンドワンライナーでもなんでもいいんですが、普通はnagiosプラグインを使います。</p>
+
+<p>serviceオブジェクトでcommandを指定する際には、引数(!区切りで最大32個)も渡せる為、上手くcommnadを定義すれば、新規でやたらと定義を追加するってことを避けれます。</p>
+
+<p>設定に出てくる<code>$USER1$</code>ってのはマクロです。pluginの入ったpathが入ってます。下記は使用頻度の高いマクロの一部です。</p>
+
+<ul>
+<li>$ARG&lt;N&gt;$</li>
+<li>$HOSTNAME$</li>
+<li>$HOSTADDRESS$</li>
+</ul>
+
+<p>他にも<a href="http://nagios.sourceforge.net/docs/3_0/macrolist.html">一杯あります</a>。ARG&lt;N&gt;はserviceオブジェクトから渡される引数で、それを更にプラグインへオプション引数として渡すときに使います。あとの2つもプラグインへの引数としてどちらかをほぼ必ず使います。HOSTADDRESSよりはHOSTNAMEを使った方がベターです。HOSTNAMEを使うことで、名前引きのチェックにもなります。</p>
+
+<h4>nrpe</h4>
+
+<p>command(のcommand<em>line)で`check</em>nrpe`というnagiosプラグインを使った監視は、他とはちょと違ってserver - agent型で動きます。対象ホスト上で実行しないと、結果が得られない(得にくい)監視をするのに使います。</p>
+
+<p>例えば、メモリの残量なんかはリモートホスト上でfree叩くとか、/proc/meminfoを覗かないとわかんないですよね(snmpという手段もあるけど、あれ俺好きじゃない)。</p>
+
+<p>check_nrpeの引数で、対象ホストの<code>nrpe.cfg</code>(エージェントデーモン、nrpeの設定)で定義されているコマンドを指定します。実行結果(exit code)は普通のチェックコマンドと同様に解釈されます。また、コマンドだけでなく、引数もエージェントに渡すことが可能です。</p>
+
+<p>残メモリ監視のcommand設定例</p>
+<pre class="highlight text">define command {
+    command_name    check_mem
+    command_line    $USER1$/check_nrpe -H $HOSTNAME$ -t 60 -c check_mem -a $ARG1$ $ARG2$
+}
+</pre>
+<p>nrpe.cfg側</p>
+<pre class="highlight text">command[check_mem]=/usr/lib64/nagios/plugins/check_mem -f -w $ARG1$ -c $ARG2$
+</pre>
+<p>commandオブジェクトの方で、serrviceオブジェクトから受け取った閾値を、今度はcheck<em>nrpeに渡してします。それが最終的にnrpeのcommandとして定義されたcheck</em>memに渡されて実行されます。</p>
+
+<p>このように、nrpeを使った監視でも引数を上手く使うことで、設定をコンパクトに保つことができます。</p>
+
+<h4>nagiosプラグイン</h4>
+
+<p>RPMで入る標準pluginはここにあります。</p>
+<pre class="highlight text">/usr/lib[64]/nagios/plugins/
+</pre>
+<p>ここに無いものは<code>yum search nagios-plugins</code>したり、<a href="http://exchange.nagios.org/">Nagios Exchange</a>で適当なキーワードで検索したりして、それっぽいものが無いか探します。</p>
+
+<p>それでも無かったら、自作。
+ペパボでも自前で作ったやつは誰でも変更出来るようになっています。</p>
+
+<p>慣れれば簡単につくれます。</p>
+
+<hr>
+
+<h2>よくある監視項目</h2>
+
+<p>社内で使われている puppet マニフェストをみながら、あーだこーだ話す。</p>
+
+<hr>
+
+<h2>ウェブインターフェース</h2>
+
+<p>Apacheをフロントエンドにしてるので、RPMを入れると勝手にconf.d/nagios.confが出来て、http://mydomain.com/nagios/ で見れるようになります。</p>
+
+<p>使い方はポチポチ押してたら、なんとなく分かります。</p>
+
+<h3>よくやるオペレーション</h3>
+
+<h4>Schedule downtime</h4>
+
+<p>Zzzマークでお馴染み。</p>
+
+<p>「これダウンタイムいれといてー。」とか「あーダウンタイム設定しわすれてたわ。」とかいう会話を今後よく聞くことになると思います。それがこれ。</p>
+
+<p>メンテ等で事前に監視がパスしないことがわかっている場合に、任意の期間、通知を停止させることできます。
+特定ホストのservice全部を対象にすることも可能です。やり方は適当にその辺のインフラの人に聞いてください。</p>
+
+<p>似た機能で<code>Disable notifications</code>ってのがありますが、こっちは <strong>よほどの事が無い限りポチらないでください</strong>。
+Schedule downtimeは時間がたてば勝手に解除されますが、こちらはそれがありません。手動で解除するしかないです。</p>
+
+<p>その為「メンテ前にポチってやってメンテ終わったけど解除忘れてた。」なおっちょこちょいをすると、後日本当に障害が起きてもそのホストは気づかれることなく放置されてしまいます(昔実際にあった)。</p>
+
+<h4>Schedule a check of all services on this host</h4>
+
+<p>若しくは、<code>Re-schedule the next check of this service</code>。</p>
+
+<p>腕時計マークでお馴染み。</p>
+
+<p>何かしらの理由でチェックがコケた後に、調査して原因となる問題を取り除いたら、とっととnagiosでの再チェックを行いたい時があります。</p>
+
+<p>そんな時にこれをポチっと押すと、優先的にチェックをして、statusを更新してくれます。</p>
+
+<h4>ホスト検索</h4>
+
+<p>wan、lanどっちも検索する時は<code>hogehost.*</code>するとどっちも出て便利。</p>
+
+<hr>
+
+<h2>運用</h2>
+
+<p>設定の管理方法がサービスごとにわりとまちまちです。主に、</p>
+
+<ul>
+<li>リポジトリをpuppetと同じにしてるか、別にしてるか</li>
+<li>hosts.cfg、hostgroup.cfgを自動生成にしているか否か</li>
+</ul>
+
+<p>の2点で違います。リポジトリの方は、更新頻度とか規模によって変えてます。更新頻度が高いのはwebistranoでnagios設定だけをデプロイするようにした方が運用が楽だったりとかそんな理由です。</p>
+
+<p>自動生成というのは、ホスト数が多くなると手編集でミスとかするのアホらしいので、ホストとかロール名を外部データソースからひっぱってきて、スクリプトでテンプレ当てるって感じです。
+AWS使ってる場合はAPIで取れるsecutity groupやroleタグをデータソースに使います。</p>
+
+<p>自動生成の例は<a href="http://d.hatena.ne.jp/lamanotrama/20120618/1339988584">ここ</a>みてください。</p>
+
+<hr>
+
+<h2>アドバンストNagios</h2>
+
+<p>某H社には、他のフレームワークと組み合わせて設定管理をとんでもないレベルで自動化したり、大規模環境に合せて分散処理したりとかやってる<a href="http://shoichimasuhara.hatenablog.com/entry/2013/03/11/184422">すごいやつ</a>がいる(元自衛官)。</p>
+
+<h2>参考資料</h2>
+
+<p><a href="http://nagios.sourceforge.net/docs/nagioscore/3/en/toc.html">本家ドキュメントサイト</a></p>
+
+<p><a href="http://www.amazon.co.jp/Nagios%E7%B5%B1%E5%90%88%E7%9B%A3%E8%A6%96-%E3%83%AA%E3%83%95%E3%82%A1%E3%83%AC%E3%83%B3%E3%82%B9-Software-Design-%EF%BD%90lus/dp/4774145823">Nagios統合監視[実践]リファレンス</a></p>
+
+<p>ほぼ唯一日本語で網羅的に解説された書籍です。インフラエンジニアは買った方がいい。</p>
+
+      </div>
+    </div>
+  </body>
+</html>

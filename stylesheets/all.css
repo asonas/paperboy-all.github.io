@@ -1,0 +1,158 @@
+@charset "UTF-8";
+/* line 4, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+body {
+  background: url(/images/bg_body.gif);
+  color: #3b3a37;
+  font-size: 123.1%;
+  text-align: center; }
+
+@media screen and (max-width: 900px) {
+  /* line 11, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+  body {
+    font-size: 14px; } }
+@media screen and (max-width: 767px) {
+  /* line 16, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+  body {
+    font-size: 11px; } }
+/* line 20, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+.inner {
+  margin: 0 auto;
+  position: relative;
+  text-align: left;
+  width: 900px; }
+
+@media screen and (max-width: 900px) {
+  /* line 27, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+  .inner {
+    width: 90%; } }
+/* line 31, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+#header {
+  height: 60px; }
+
+/* line 34, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+#brand {
+  color: #3b3a37;
+  display: block;
+  float: left;
+  font-family: "Ledger", "ヒラギノ明朝 Pro W6", "Hiragino Mincho Pro", "HGS明朝E", "ＭＳ Ｐ明朝", serif;
+  line-height: 60px;
+  height: 60px;
+  text-decoration: none; }
+
+/* line 43, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+#pepapon-tab {
+  background: url(/images/pepapon-tab-blue.png) no-repeat bottom center;
+  display: block;
+  position: absolute;
+  height: 40px;
+  outline: none;
+  overflow: hidden;
+  right: 0;
+  text-indent: -9999px;
+  top: 0;
+  width: 29px; }
+  /* line 54, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+  #pepapon-tab:hover {
+    height: 45px; }
+
+/* line 58, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+#contents {
+  padding: 2em 0 4em; }
+
+/* line 61, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+h1, h2, h3 {
+  color: #000;
+  margin-bottom: 1em; }
+
+/* line 65, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+h1 {
+  font-family: "Ledger", "ヒラギノ明朝 Pro W6", "Hiragino Mincho Pro", "HGS明朝E", "ＭＳ Ｐ明朝", serif;
+  font-size: 300%;
+  line-height: 1.3;
+  text-shadow: 0 -1px 0 black, 0 1px 0 white; }
+
+/* line 73, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+h2 {
+  font-size: 197%;
+  font-weight: bold; }
+
+/* line 77, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+h3 {
+  border-bottom: 1px dotted #000;
+  font-size: 138.5%;
+  font-weight: bold;
+  display: inline-block; }
+
+/* line 83, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+p {
+  margin-bottom: 1em; }
+
+/* line 86, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+hr {
+  background-color: #3b3a37;
+  border: 1px #3b3a37 solid;
+  color: #3b3a37;
+  height: 2px;
+  margin-bottom: 2em; }
+
+/* line 93, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+ul {
+  list-style: inside disc;
+  margin-bottom: 2em; }
+
+/* line 97, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+li {
+  margin-bottom: 0.5em; }
+
+/* line 100, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+ul > li > ul {
+  padding: 0.5em 0 1em 1em;
+  margin-bottom: 0; }
+
+/* line 104, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+pre, code {
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 4px; }
+
+/* line 110, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+pre {
+  margin-bottom: 1em;
+  white-space: pre-wrap;
+  white-space: -moz-pre-wrap;
+  white-space: -o-pre-wrap; }
+
+/* line 116, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+pre.highlight {
+  border: 1px solid #bebab0;
+  display: block;
+  margin-bottom: 1em;
+  padding: 0.5em 1em; }
+
+/* line 122, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+code {
+  border: 1px solid #bebab0;
+  display: block;
+  margin: 1em 0;
+  padding: 0.5em 1em; }
+
+/* line 128, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+blockquote {
+  font-family: "Ledger", "ヒラギノ明朝 Pro W6", "Hiragino Mincho Pro", "HGS明朝E", "ＭＳ Ｐ明朝", serif;
+  background: rgba(0, 0, 0, 0.05);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
+  padding: 1.5em 1em 1.5em 3em;
+  position: relative;
+  margin-bottom: 2em; }
+  /* line 136, /Users/usr0600238/Dropbox/dev/all/paperboy-all.github.io/source/stylesheets/all.scss */
+  blockquote:before {
+    color: #fff;
+    content: "\"";
+    font-family: 'Ledger', serif;
+    font-size: 600%;
+    left: 0.1em;
+    line-height: 1em;
+    position: absolute;
+    top: 0; }
