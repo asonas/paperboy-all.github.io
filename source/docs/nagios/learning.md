@@ -22,18 +22,16 @@ title: NagiosとMuninの基礎
 
 # Nagios
 
-何のための監視かは今日はもう説明しない。
+何のための監視かは今日はもう説明しない。なぜ開発者がNagiosを学ぶのか?
 
-なぜ開発者がNagiosを学ぶのか？
-自分が作った物は自分で面倒見たいのが本音だろう。
+自分が作った物は自分で面倒見たいのが本音だろう。@kyanny さんがいいこと書いてる。
 
-@kyanny さんがいいこと書いてる。
 [お願いします脳の恐怖](http://blog.kyanny.me/entry/2012/07/20/033411)
-
 
 ## サービスモニタリングフレームワーク
 
 nagiosってなんすか?
+
 復数のホスト、サービス、リソース等の状態の監視を効率的に管理するためのもの。
 
 ### フレームワーク2大巨頭
@@ -51,9 +49,7 @@ nagiosってなんすか?
 
 ### フレームワークなので
 
-インストールしただけでは基本的になにもやってくれません。
-
-やってくれることは大きく分けて4つ。
+インストールしただけでは基本的になにもやってくれません。やってくれることは大きく分けて4つ。
 
 * サービスチェックの実行と、そのスケジューリング
 * チェック結果の通知
@@ -68,10 +64,7 @@ nagiosってなんすか?
 
 ## 設定の基本
 
-設定の自由度が高いので、やり方はいくらでもあります。
-その割に、ネット上で探しても(それなりの規模での)設定例というのはなかなか見つかりません。
-
-今日は現時点で俺がいいと思って実際にやっている設定管理のポイントを交えながら説明していきます。
+設定の自由度が高いので、やり方はいくらでもあります。その割に、ネット上で探しても(それなりの規模での)設定例というのはなかなか見つかりません。今日は現時点で俺がいいと思って実際にやっている設定管理のポイントを交えながら説明していきます。
 
 自分のvm(port 80空いてるやつ)でnagiosをインストールしておいてください。
 
@@ -90,13 +83,12 @@ sudo yum install nagios
 
 一般的に`/etc/nagios/`直下に置かれます。
 
-* `nagios.cfg`
+* nagios.cfg
   * インクルードする設定ファイルの場所とか、その他リソースの置き場とか
-* `cgi.cfg`
+* cgi.cfg
   * ウェブインターフェースの権限設定とか
 
-これらは最初に設定したらその後触ることは稀です。
-なので、特に開発者はその詳細を知る必要は無いです(というか俺も初期セットアップ時に毎回忘れて調べてる)。
+これらは最初に設定したらその後触ることは稀です。なので、特に開発者はその詳細を知る必要は無いです(というか俺も初期セットアップ時に毎回忘れて調べてる)。
 
 ### 監視項目の設定
 
@@ -139,8 +131,7 @@ sudo yum install nagios
 
 #### template
 
-各オブジェクトの説明の前に。
-全オブジェクトに共通する性質として、こいつらはinheritableです。
+各オブジェクトの説明の前に。全オブジェクトに共通する性質として、こいつらはinheritableです。
 
 * テンプレートオブジェクト
   * `register`アトリビュートを0にすると、それ自体は単にひな形となる
@@ -148,7 +139,6 @@ sudo yum install nagios
   * 継承を連鎖させる(孫を作る)こともできるけどおすすめしない。むしろすんな
   * staging用サーバとかでちょい変えることはある
 * 子は親のアトリビュートの値を継承し、全て上書き可能
-
 
 #### host
 
@@ -207,7 +197,7 @@ hostgroups.cfgも一部のサービスでは自動生成してます。
 サービス名やプロセス名、サーバリソース名とかを名称(`service_description`アトリビュート)として付けます。
 service_descriptionはアラートに表示される(例えばメールのsubject)ので、他のオブジェクトのnameとくらべて、より人間がぱっと見で分かりやすいものにした方がいいです。
 
-refs http://nagios.sourceforge.net/docs/nagioscore/3/en/objectdefinitions.html#service
+refs [Service Definition](http://nagios.sourceforge.net/docs/nagioscore/3/en/objectdefinitions.html#service)
 
 > may contain spaces, dashes, and colons (semicolons, apostrophes, and quotation marks should be avoided)
 
@@ -215,8 +205,8 @@ refs http://nagios.sourceforge.net/docs/nagioscore/3/en/objectdefinitions.html#s
 
 serviceオブジェクトは(他のobjectの`*_name`と違い)下記の2つのアトリビュートの組み合わせで一意であればOKです。
 
-* `service_description`
-* `host[group]_name`
+ * `service_description`
+ * `host[group]_name`
 
 つまり、対象やcheck_comnnadだけを変えてservice_descriptionは同じの沢山ってのはアリです。なので、例えば
 「同じミドルウェアを監視するけど、こっちのroleでは厳密に監視するように(check_commandで定義)して、あっちの方は緩くしておく。」
@@ -233,17 +223,15 @@ commnad名(`command_name`)はserviceオブジェクトの`check_command`アト�
 `command_line`に実際に実行するコマンドを書きます。
 コマンドのexit codeでステータス(OK|WARN|CRIT|UNKNOWN)を判別するので、コマンドワンライナーでもなんでもいいんですが、普通はnagiosプラグインを使います。
 
-serviceオブジェクトでcommandを指定する際には、引数(`!`区切りで最大32個)も渡せる為、上手くcommnadを定義すれば、新規でやたらと定義を追加するってことを避けれます。
+serviceオブジェクトでcommandを指定する際には、引数(\!区切りで最大32個)も渡せる為、上手くcommnadを定義すれば、新規でやたらと定義を追加するってことを避けれます。
 
 設定に出てくる`$USER1$`ってのはマクロです。pluginの入ったpathが入ってます。下記は使用頻度の高いマクロの一部です。
 
-* `$ARG<N>$`
-* `$HOSTNAME$`
-* `$HOSTADDRESS$`
+ * $ARG\<N\>$
+ * $HOSTNAME$
+ * $HOSTADDRESS$
 
-他にも[一杯あります](http://nagios.sourceforge.net/docs/3_0/macrolist.html)。
-ARG<N>はserviceオブジェクトから渡される引数で、それを更にプラグインへオプション引数として渡すときに使います。
-あとの2つもプラグインへの引数としてどちらかをほぼ必ず使います。HOSTADDRESSよりはHOSTNAMEを使った方がベターです。HOSTNAMEを使うことで、名前引きのチェックにもなります。
+他にも[一杯あります](http://nagios.sourceforge.net/docs/3_0/macrolist.html)。ARG\<N\>はserviceオブジェクトから渡される引数で、それを更にプラグインへオプション引数として渡すときに使います。あとの2つもプラグインへの引数としてどちらかをほぼ必ず使います。HOSTADDRESSよりはHOSTNAMEを使った方がベターです。HOSTNAMEを使うことで、名前引きのチェックにもなります。
 
 #### nrpe
 
@@ -347,16 +335,13 @@ wan、lanどっちも検索する時は`hogehost.*`するとどっちも出て�
 自動生成というのは、ホスト数が多くなると手編集でミスとかするのアホらしいので、ホストとかロール名を外部データソースからひっぱってきて、スクリプトでテンプレ当てるって感じです。
 AWS使ってる場合はAPIで取れるsecutity groupやroleタグをデータソースに使います。
 
-自動生成の例はここみてください。
-http://d.hatena.ne.jp/lamanotrama/20120618/1339988584
+自動生成の例は[ここ](http://d.hatena.ne.jp/lamanotrama/20120618/1339988584)みてください。
 
 ----
 
 ## アドバンストNagios
 
-某H社には、他のフレームワークと組み合わせて設定管理をとんでもないレベルで自動化したり、大規模環境に合せて分散処理したりとかやってるすごいやつがいる(元自衛官)。
-
-http://shoichimasuhara.hatenablog.com/entry/2013/03/11/184422
+某H社には、他のフレームワークと組み合わせて設定管理をとんでもないレベルで自動化したり、大規模環境に合せて分散処理したりとかやってる[すごいやつ](http://shoichimasuhara.hatenablog.com/entry/2013/03/11/184422)がいる(元自衛官)。
 
 ## 参考資料
 
