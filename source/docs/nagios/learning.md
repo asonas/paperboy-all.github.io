@@ -26,7 +26,7 @@ title: Nagiosの基礎
 
 nagiosってなんすか?
 
-復数のホスト、サービス、リソース等の状態の監視を効率的に管理するためのもの。
+複数のホスト、サービス、リソース等の状態の監視を効率的に管理するためのもの。
 
 ## フレームワーク2大巨頭
 
@@ -99,7 +99,7 @@ sudo yum install nagios
 * ファイル名は自由。関係ないことを設定してもOK
   * でも椅子は飛ぶ
 * サービスごとに階層を掘るのが吉
-  * 復数商材を同じnagiosで面倒みるってことも有るので、混ぜるな危険
+  * 複数商材を同じnagiosで面倒みるってことも有るので、混ぜるな危険
 
 最近はRPMインストール時にnagios/objectが掘られないぽい？
 
@@ -143,7 +143,7 @@ sudo yum install nagios
 * 通常はpingで監視
 * 変更は可能
 
-復数のネットワークに属する場合は、別々のhostとして定義するのが吉(not 物理的な単位でのサーバ)。
+複数のネットワークに属する場合は、別々のhostとして定義するのが吉(not 物理的な単位でのサーバ)。
 
 * (特に)ペパボのサービスはNIC2つを付けて .jp と .lanの2つで運用している
 * それぞれでサーブしているサービスは違う(roleの視点でみても厳密には別ものである)
@@ -194,7 +194,7 @@ refs [Service Definition](http://nagios.sourceforge.net/docs/nagioscore/3/en/obj
 
 > may contain spaces, dashes, and colons (semicolons, apostrophes, and quotation marks should be avoided)
 
-監視対象はhostもしくはhostgroup(それぞれ復数可)、またはその二つの組み合わせで指定可能ですが、大抵はhostgroupだけでなんとかなります。hostをだらだら並べるような設定はクソなことがおおいです。
+監視対象はhostもしくはhostgroup(それぞれ複数可)、またはその二つの組み合わせで指定可能ですが、大抵はhostgroupだけでなんとかなります。hostをだらだら並べるような設定はクソなことがおおいです。
 
 serviceオブジェクトは(他のobjectの`*_name`と違い)下記の2つのアトリビュートの組み合わせで一意であればOKです。
 
